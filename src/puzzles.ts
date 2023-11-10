@@ -4,7 +4,20 @@ type Medals = Record<string, UserMedals>;
 import medals from "./medals.json";
 import { getRandom } from "./utils";
 
-interface Complexity {
+export type Complexities =
+  | "beginner"
+  | "intermediate"
+  | "advanced"
+  | "nightmare";
+
+export const complexities: Complexities[] = [
+  "beginner",
+  "intermediate",
+  "advanced",
+  "nightmare",
+];
+
+interface PuzzleComplexity {
   star1solutionTotal: number;
   star1solutionCount: number;
   star2solutionTotal: number;
@@ -14,15 +27,15 @@ interface Complexity {
 
 async function getPuzzleClasses(medals: Medals) {
   const years = Object.keys(medals);
-  const complexity: Record<string, Complexity> = {};
+  const complexity: Record<string, PuzzleComplexity> = {};
   for (const year of years) {
     const yearUsers = Object.keys(medals[year]);
     for (const user of yearUsers) {
       const userMedals = medals[year][user];
       for (const day in userMedals) {
-        const key = `${year},${Number(day) + 1}`;
-        if (!complexity[key]) {
-          complexity[key] = {
+        const puzzleKey = `${year},${Number(day) + 1}`;
+        if (!complexity[puzzleKey]) {
+          complexity[puzzleKey] = {
             star1solutionCount: 0,
             star1solutionTotal: 0,
             star2solutionCount: 0,
@@ -32,15 +45,17 @@ async function getPuzzleClasses(medals: Medals) {
         }
         if (userMedals[day] !== null) {
           if (userMedals[day]?.[0] != null) {
-            complexity[key].star1solutionCount += 1;
-            complexity[key].star1solutionTotal += userMedals[day]?.[0] || 0;
+            complexity[puzzleKey].star1solutionCount += 1;
+            complexity[puzzleKey].star1solutionTotal +=
+              userMedals[day]?.[0] || 0;
           }
           if (userMedals[day]?.[1] != null) {
-            complexity[key].star2solutionCount += 1;
-            complexity[key].star2solutionTotal += userMedals[day]?.[1] || 0;
+            complexity[puzzleKey].star2solutionCount += 1;
+            complexity[puzzleKey].star2solutionTotal +=
+              userMedals[day]?.[1] || 0;
           }
         } else {
-          complexity[key].noSolutionCount += 1;
+          complexity[puzzleKey].noSolutionCount += 1;
         }
       }
     }
@@ -65,20 +80,20 @@ async function getPuzzleClasses(medals: Medals) {
         ? b.noSolutionCount - a.noSolutionCount
         : b.complexity - a.complexity
     )
-    .reduce<Record<string, string[]>>(
+    .reduce<Record<Complexities, string[]>>(
       (accu, item) => {
         if (item.complexity < 450) {
-          accu.easy.push(item.id);
+          accu.beginner.push(item.id);
         } else if (item.complexity < 800) {
-          accu.advanced.push(item.id);
+          accu.intermediate.push(item.id);
         } else if (item.complexity < 1400) {
-          accu.professional.push(item.id);
+          accu.advanced.push(item.id);
         } else {
-          accu.expert.push(item.id);
+          accu.nightmare.push(item.id);
         }
         return accu;
       },
-      { easy: [], advanced: [], professional: [], expert: [] }
+      { beginner: [], intermediate: [], advanced: [], nightmare: [] }
     );
   const noSolutionAverage = Math.round(
     puzzles.reduce((accu, p) => p.noSolutionCount + accu, 0) / puzzles.length
@@ -95,7 +110,7 @@ export type Puzzle = {
   noSolutionDiff: number;
 };
 
-export async function getRandomPuzzle(name: string) {
+export async function getRandomPuzzle(name: Complexities) {
   const [classes, puzzles, noSolutionAverage] = await getPuzzleClasses(medals);
   const puzzleId = getRandom(classes[name]);
   const puzzle = puzzles.find((puzzle) => puzzle.id === puzzleId);
