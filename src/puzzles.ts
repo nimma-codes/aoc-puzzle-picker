@@ -68,17 +68,17 @@ async function getPuzzleClasses(medals: Medals) {
     .reduce<Record<string, string[]>>(
       (accu, item) => {
         if (item.complexity < 450) {
-          accu.c1.push(item.id);
+          accu.easy.push(item.id);
         } else if (item.complexity < 800) {
-          accu.c2.push(item.id);
+          accu.advanced.push(item.id);
         } else if (item.complexity < 1400) {
-          accu.c3.push(item.id);
+          accu.professional.push(item.id);
         } else {
-          accu.c4.push(item.id);
+          accu.expert.push(item.id);
         }
         return accu;
       },
-      { c1: [], c2: [], c3: [], c4: [] }
+      { easy: [], advanced: [], professional: [], expert: [] }
     );
   const noSolutionAverage = Math.round(
     puzzles.reduce((accu, p) => p.noSolutionCount + accu, 0) / puzzles.length
@@ -92,7 +92,7 @@ export type Puzzle = {
   year: number;
   day: number;
   complexity: number;
-  noSolution: number;
+  noSolutionDiff: number;
 };
 
 export async function getRandomPuzzle(name: string) {
@@ -105,6 +105,6 @@ export async function getRandomPuzzle(name: string) {
     name: puzzleId,
     url: `https://adventofcode.com/${puzzleId}`,
     complexity: puzzle!.complexity,
-    noSolution: noSolutionAverage - puzzle!.noSolutionCount,
+    noSolutionDiff: puzzle!.noSolutionCount - noSolutionAverage,
   };
 }
