@@ -4,6 +4,15 @@ import { Complexities, Puzzle, getRandomPuzzle } from "@/puzzles";
 import { getRandom } from "@/utils";
 import Link from "next/link";
 import { useState } from "react";
+import QRCode from "react-qr-code";
+import colors from "tailwindcss/colors";
+
+const complexityQrColor: Record<Complexities, string> = {
+  beginner: colors.sky[500],
+  intermediate: colors.lime[600],
+  advanced: colors.yellow[500],
+  nightmare: colors.red[600],
+};
 
 const complexityColor: Record<Complexities, string> = {
   beginner: "text-sky-500",
@@ -18,11 +27,13 @@ export default function Home() {
   const availableYears = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022];
   const days = Array.from({ length: 25 }, (_, i) => i + 1);
 
-  const [years, setYears] = useState([2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
+  const [years, setYears] = useState([
+    2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+  ]);
 
   const toggleYear = (year: number) => {
     years.includes(year)
-      ? setYears(years.filter(y => y !== year))
+      ? setYears(years.filter((y) => y !== year))
       : setYears([year, ...years]);
   };
 
@@ -63,14 +74,15 @@ export default function Home() {
         </div>
         <div className="text-xl font-bold">Pick a complexity and years</div>
         <div className="flex gap-1 flex-row flex-wrap md:gap-2 pt-8 opacity-100 hover:opacity-100">
-          {availableYears.map(y => (
+          {availableYears.map((y) => (
             <button
               key={y}
               type="button"
               className={`
-                ${years.includes(y)
-                  ? "bg-gray-400 text-black border-gray-900"
-                  : "bg-gray-900 text-gray-400 border-gray-400"
+                ${
+                  years.includes(y)
+                    ? "bg-gray-400 text-black border-gray-900"
+                    : "bg-gray-900 text-gray-400 border-gray-400"
                 }
                 block border rounded-md px-2 py-1 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white-600`}
               onClick={() => toggleYear(y)}
@@ -142,13 +154,32 @@ export default function Home() {
                   )}
                   )
                 </div>
-                <div className="pt-8">
+                <div className="pt-8 text-2xl">
                   <a
-                    className="underline text-sky-500"
+                    className={
+                      (complexity ? complexityColor[complexity] : "") +
+                      " underline"
+                    }
                     href={puzzle.url}
                     target="_blank"
                   >
                     Take me to it!
+                    <div className="h-[200px] w-[200px] text-sky-500 pt-4">
+                      <QRCode
+                        size={200}
+                        style={{
+                          height: "auto",
+                          maxWidth: "100%",
+                          width: "100%",
+                        }}
+                        fgColor="#0f0f23"
+                        bgColor={
+                          complexity ? complexityQrColor[complexity] : "#fffff"
+                        }
+                        value={puzzle.url}
+                        viewBox={`0 0 200 200`}
+                      />
+                    </div>
                   </a>
                 </div>
               </div>
@@ -164,13 +195,17 @@ export default function Home() {
         )}
       </div>
 
-      <div className="flex gap-4 items-end">
+      <div className="flex gap-4 items-end justify-between pt-16">
         <Link href="about" className="underline">
           About
         </Link>
         {/* This is only a simple AoC tribute site, let's not do extremely heavy image optimization (at higher hosting costs). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="ml-auto opacity-25 hidden sm:inline-block" src="qr-url-to-prod.png" alt="QR code linking to https://aoc.nimma.codes" />
+        <img
+          className="opacity-25 hidden sm:inline-block mt-[-200px]"
+          src="qr-url-to-prod.png"
+          alt="QR code linking to https://aoc.nimma.codes"
+        />
       </div>
     </main>
   );
