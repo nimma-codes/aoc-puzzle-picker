@@ -47,13 +47,13 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col justify-between py-24 px-48">
+    <main className="flex min-h-screen flex-col justify-between p-4 md:p-16 lg:py-24 lg:px-48">
       <div>
-        <div className="text-3xl font-bold pb-16">
+        <div className="text-3xl font-bold pb-8 md:pb-16">
           Advent of Code Random Puzzle Picker
         </div>
         <div className="text-xl font-bold">Pick a complexity</div>
-        <div className="flex flex-row gap-4 pt-8 pb-16">
+        <div className="flex flex-col gap-2 md:flex-row md:gap-4 pt-8 pb-16">
           <button
             type="button"
             className="block border border-sky-500 rounded-md text-sky-500 px-3.5 py-2.5 text-lg font-semibold hover:text-white shadow-sm hover:bg-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
