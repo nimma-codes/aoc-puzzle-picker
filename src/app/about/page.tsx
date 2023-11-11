@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export default function About() {
   return (
-    <main className="flex min-h-screen flex-col justify-between py-24 px-48">
+    <main className="flex min-h-screen flex-col justify-between p-4 md:p-16 lg:py-24 lg:px-48">
       <div>
         <div className="text-lime-500 text-2xl font-bold py-2">About</div>
         <div className="text-sm">
-          <div className="pt-8">
+          <div className="md:pt-8">
             We want to thank{" "}
             <a
               href="http://was.tl"

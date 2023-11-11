@@ -16,6 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="favicon.png" />
+        <meta name="viewport" content="width=device-width" />
+      </head>
       <body className={sourceCodeProFont.className}>{children}</body>
     </html>
   );
