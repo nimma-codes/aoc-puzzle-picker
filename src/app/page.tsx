@@ -195,7 +195,7 @@ export default function Home() {
         )}
       </div>
 
-      <div className="flex gap-4 items-end justify-between">
+      <div className="flex gap-4 items-end justify-between pt-16">
         <Link href="about" className="underline">
           About
         </Link>
