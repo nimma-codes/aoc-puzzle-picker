@@ -138,10 +138,13 @@ export default function Home() {
         )}
       </div>
 
-      <div>
+      <div className="flex gap-4 items-end">
         <Link href="about" className="underline">
           About
         </Link>
+        {/* This is only a simple AoC tribute site, let's not do extremely heavy image optimization (at higher hosting costs). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="ml-auto opacity-25 hidden sm:inline-block" src="qr-url-to-prod.png" alt="QR code linking to https://aoc.nimma.codes" />
       </div>
     </main>
   );
