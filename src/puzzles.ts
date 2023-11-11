@@ -25,8 +25,8 @@ interface PuzzleComplexity {
   noSolutionCount: number;
 }
 
-async function getPuzzleClasses(medals: Medals) {
-  const years = Object.keys(medals);
+async function getPuzzleClasses(medals: Medals, onlyForYears: number[]) {
+  const years = Object.keys(medals).filter(y => onlyForYears.includes(parseInt(y)));
   const complexity: Record<string, PuzzleComplexity> = {};
   for (const year of years) {
     const yearUsers = Object.keys(medals[year]);
@@ -110,8 +110,8 @@ export type Puzzle = {
   noSolutionDiff: number;
 };
 
-export async function getRandomPuzzle(name: Complexities) {
-  const [classes, puzzles, noSolutionAverage] = await getPuzzleClasses(medals);
+export async function getRandomPuzzle(name: Complexities, years: number[]) {
+  const [classes, puzzles, noSolutionAverage] = await getPuzzleClasses(medals, years);
   const puzzleId = getRandom(classes[name]);
   const puzzle = puzzles.find((puzzle) => puzzle.id === puzzleId);
   return {

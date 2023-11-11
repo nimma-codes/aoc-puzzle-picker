@@ -15,8 +15,16 @@ const complexityColor: Record<Complexities, string> = {
 export default function Home() {
   const [puzzle, setPuzzle] = useState<Puzzle>();
   const [complexity, setComplexity] = useState<Complexities>();
-  const years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022];
+  const availableYears = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022];
   const days = Array.from({ length: 25 }, (_, i) => i + 1);
+
+  const [years, setYears] = useState([2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]);
+
+  const toggleYear = (year: number) => {
+    years.includes(year)
+      ? setYears(years.filter(y => y !== year))
+      : setYears([year, ...years]);
+  };
 
   const handleClick = async (name: Complexities) => {
     setComplexity(name);
@@ -28,13 +36,14 @@ export default function Home() {
       complexity: 0,
       noSolutionDiff: 0,
     };
+    const yearsToConsider = years.length ? years : availableYears;
 
     setPuzzle(puzzle);
 
     const incrementTime = 150;
 
     let timer = setInterval(() => {
-      const year = getRandom(years);
+      const year = getRandom(yearsToConsider);
       const day = getRandom(days);
       setPuzzle({ ...puzzle, year, day });
     }, incrementTime);
@@ -42,7 +51,7 @@ export default function Home() {
     setTimeout(async () => {
       clearInterval(timer);
 
-      setPuzzle(await getRandomPuzzle(name));
+      setPuzzle(await getRandomPuzzle(name, yearsToConsider));
     }, 3000);
   };
 
@@ -52,8 +61,25 @@ export default function Home() {
         <div className="text-3xl font-bold pb-8 md:pb-16">
           Advent of Code Random Puzzle Picker
         </div>
-        <div className="text-xl font-bold">Pick a complexity</div>
-        <div className="flex flex-col gap-2 md:flex-row md:gap-4 pt-8 pb-16">
+        <div className="text-xl font-bold">Pick a complexity and years</div>
+        <div className="flex gap-1 flex-row flex-wrap md:gap-2 pt-8 opacity-100 hover:opacity-100">
+          {availableYears.map(y => (
+            <button
+              key={y}
+              type="button"
+              className={`
+                ${years.includes(y)
+                  ? "bg-gray-400 text-black border-gray-900"
+                  : "bg-gray-900 text-gray-400 border-gray-400"
+                }
+                block border rounded-md px-2 py-1 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white-600`}
+              onClick={() => toggleYear(y)}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-col gap-2 md:flex-row md:gap-4 pt-4 pb-16">
           <button
             type="button"
             className="block border border-sky-500 rounded-md text-sky-500 px-3.5 py-2.5 text-lg font-semibold hover:text-white shadow-sm hover:bg-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
